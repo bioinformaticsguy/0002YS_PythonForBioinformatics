@@ -141,3 +141,4 @@ def read_FASTA_sequences(filename):
 
 def make_indexed_sequence_dictionary(filename):
     return {info:seq for info, seq in read_FASTA_sequences(filename)}
+
