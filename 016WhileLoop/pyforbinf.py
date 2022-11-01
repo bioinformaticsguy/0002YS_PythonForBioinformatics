@@ -141,3 +141,19 @@ def read_FASTA_sequences(filename):
 
 def make_indexed_sequence_dictionary(filename):
     return {info:seq for info, seq in read_FASTA_sequences(filename)}
+
+
+def readSequence(filename):
+    '''given the name of a FASTA file, read and return its first sequence, 
+    ignoring the sequence description '''
+    seq = ''
+
+    with open(filename) as file:
+        line = file.readline()
+        while line and line[0] == ">":
+            line = file.readline()
+        while line and line[0] != '>':
+            seq += line
+            line = file.readline()
+
+    return seq 
