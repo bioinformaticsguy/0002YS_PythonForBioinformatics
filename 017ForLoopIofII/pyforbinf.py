@@ -143,7 +143,7 @@ def make_indexed_sequence_dictionary(filename):
     return {info:seq for info, seq in read_FASTA_sequences(filename)}
 
 
-def readSequence(filename):
+def getFirstSequenceFromFastaFile(filename):
     '''given the name of a FASTA file, read and return its first sequence, 
     ignoring the sequence description '''
     seq = ''
