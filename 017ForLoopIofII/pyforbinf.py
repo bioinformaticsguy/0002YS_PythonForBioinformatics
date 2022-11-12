@@ -157,3 +157,23 @@ def getFirstSequenceFromFastaFile(filename):
             line = file.readline()
 
     return seq 
+
+
+def readFastaIteration(filename):
+    '''Given a fasta file returns a list of all the touples
+    in which the first element of touple is the description of the fasta sequence 
+    and the 2nd element is the sequence itself.'''
+    sequences = []
+    descrip = None
+    with open(filename) as file:
+        for line in file:
+            if line[0] == ">":
+                if descrip:
+                    sequences.append((descrip, seq))
+                descrip = line[1:-1].split('|')
+                seq = '' 
+            else:
+                seq = seq + line[:-1]
+        sequences.append((descrip, seq))
+    
+    return sequences
