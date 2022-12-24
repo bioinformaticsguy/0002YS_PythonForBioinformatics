@@ -177,3 +177,7 @@ def readFastaIteration(filename):
         sequences.append((descrip, seq))
     
     return sequences
+
+
+if __name__ == '__main__':
+    main()
