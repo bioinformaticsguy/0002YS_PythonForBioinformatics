@@ -178,6 +178,87 @@ def readFastaIteration(filename):
     
     return sequences
 
+def read_FASTA(filename):
+    with open(filename) as file:
+        return [(part[0].split('|'),
+                 part[2].replace('\n', ''))
+                    for part in 
+                         [entry.partition('\n') for entry in file.read().split('>')[1:]]]
+
+
+def longest_sequence(filename):
+    longest_seq = ''
+    for info, seq in read_FASTA(filename):
+        longest_seq = max(longest_seq, seq, key=len)
+    return longest_seq
+
+
+def extract_gi_id(description):
+    '''Given a FASTA file description line, return its GenInfo ID if it has one'''
+    if description[0] != '>':
+        return None
+    fields = description[1:].split('|')
+    if 'gi' not in fields:
+        return None
+    return fields[1 + fields.index('gi')]
+
+def get_gi_ids(filename):
+    """Return a list of GenInfo IDs of all sequences in the file names filename"""
+    with open(filename) as file:
+        return [extract_gi_id(line) for line in file if line[0] == '>']
+
+def get_gi_ids_from_files(filenames):
+    """Return a list of the GenInfo ID's of all sequences formed in the
+    files whose names are contained in the collection filenames."""
+    idlst = []
+    for filename in filenames:
+        idlst += get_gi_ids(filename)
+    return idlst
+
+def search_FASTA_file_by_gi_id(id, filename):
+    """Return the sequence with the GenInfo ID ID from the FASTA file
+    named filename, reading one entry at a time until it is found"""
+    id = str(id) # user might call with a number
+    with open(filename) as file:
+        return FASTA_search_by_gi_id(id, file) 
+
+
+def FASTA_search_by_gi_id(id, file):
+    for line in file:
+        if (line[0] == '>' and
+            str(id) == get_gi_id(line)):
+            return read_FASTA_sequence(file)
+
+def read_FASTA_sequence(file):
+    seq = '' 
+    for line in file:
+        if not line or line[0] == '>':
+            return seq
+        seq += line[:-1]
+   
+
+def get_gi_id(description):
+    fields = description[1:].split('|')
+    if fields and 'gi' in fields:
+        return fields[1 + fields.index('gi')]
+
+
+def print_codon_table():
+    """Print the DNA codon table in a nice, but simple, arrangement"""
+    DNA_bases = ['A', 'U', 'G', 'C']
+    
+    for base1 in DNA_bases: # horizontal section (or "group")
+        for base3 in DNA_bases: # line (or "row")
+            for base2 in DNA_bases: # vertical section (or "column")    
+                # the base2 loop is inside the base3 loop!
+                print(base1+base2+base3,
+                        translate_RNA_codon(base1+base2+base3),
+                        end='     ')
+            print()
+        print()
+
+
+
 
 if __name__ == '__main__':
     pass
